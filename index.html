@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f1115">
+  <title>Silüet · Günlük ülke tahmin oyunu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="icon-btn" id="btnHelp" aria-label="Nasıl oynanır">?</button>
+      <h1 class="logo">Silüet<span class="logo-day" id="dayLabel"></span></h1>
+      <button class="icon-btn" id="btnStats" aria-label="İstatistikler">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-7h3v7h-3z"/></svg>
+      </button>
+    </header>
+
+    <nav class="modes" role="tablist" aria-label="Oyun modu">
+      <button class="mode" role="tab" data-mode="world">🌍 Dünya</button>
+      <button class="mode" role="tab" data-mode="europe">🇪🇺 Avrupa</button>
+      <button class="mode" role="tab" data-mode="free">🎲 Serbest</button>
+    </nav>
+
+    <main>
+      <section class="silhouette-card" id="silCard">
+        <svg id="silhouette" class="silhouette" viewBox="0 0 100 100" role="img" aria-label="Gizli ülkenin silüeti"></svg>
+      </section>
+
+      <section class="hints" id="hints"></section>
+
+      <section class="guesses" id="guesses" aria-live="polite"></section>
+
+      <section class="input-area" id="inputArea">
+        <div class="combo">
+          <input id="guessInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                 placeholder="Ülke adı yaz…" aria-label="Ülke tahmini" aria-autocomplete="list" aria-controls="suggestions" role="combobox" aria-expanded="false">
+          <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="btnGuess">Tahmin et</button>
+          <button class="btn" id="btnHint" disabled>💡 İpucu</button>
+        </div>
+        <p class="msg" id="msg" role="status"></p>
+      </section>
+
+      <section class="result" id="result" hidden>
+        <div class="result-head">
+          <span class="result-flag" id="resFlag"></span>
+          <div>
+            <div class="result-status" id="resStatus"></div>
+            <div class="result-name" id="resName"></div>
+            <div class="result-meta" id="resMeta"></div>
+          </div>
+        </div>
+        <svg id="worldMap" class="world-map" viewBox="-180 -85 360 145" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Dünya haritasında konum"></svg>
+        <pre class="share-text" id="shareText"></pre>
+        <div class="actions">
+          <button class="btn primary" id="btnCopy">📋 Kopyala</button>
+          <button class="btn" id="btnNext" hidden>🎲 Yeni ülke</button>
+        </div>
+        <p class="countdown" id="countdown"></p>
+      </section>
+    </main>
+
+    <footer class="foot">Sınır verisi: Natural Earth (public domain)</footer>
+  </div>
+
+  <!-- İstatistik penceresi -->
+  <dialog id="statsDlg" class="dlg">
+    <form method="dialog"><button class="dlg-close" aria-label="Kapat">✕</button></form>
+    <h2>İstatistikler</h2>
+    <div class="stat-tabs">
+      <button class="stat-tab" data-smode="world">🌍 Dünya</button>
+      <button class="stat-tab" data-smode="europe">🇪🇺 Avrupa</button>
+    </div>
+    <div class="stat-grid" id="statGrid"></div>
+    <h3>Tahmin dağılımı</h3>
+    <div class="dist" id="dist"></div>
+  </dialog>
+
+  <!-- Yardım penceresi -->
+  <dialog id="helpDlg" class="dlg">
+    <form method="dialog"><button class="dlg-close" aria-label="Kapat">✕</button></form>
+    <h2>Nasıl oynanır?</h2>
+    <p>Silüetine bakarak günün ülkesini <b>6 tahminde</b> bul.</p>
+    <p>Her yanlış tahminden sonra şunları görürsün:</p>
+    <ul>
+      <li>tahmin ettiğin ülkenin doğru ülkeye <b>uzaklığı</b>,</li>
+      <li>doğru ülkenin hangi <b>yönde</b> kaldığı (⬆️ ↗️ ➡️ …),</li>
+      <li><b>yakınlık</b> yüzdesi (%100 tam isabet, %0 dünyanın öbür ucu).</li>
+    </ul>
+    <p>Uzaklıklar ülkelerin anakaralarının merkez noktaları arasında ölçülür.</p>
+    <p>3. yanlış tahminden sonra <b>kıta</b>, 5. yanlıştan sonra <b>başkentin ilk harfi</b> ipucu olarak açılır.</p>
+    <p><b>Dünya</b> ve <b>Avrupa</b> modlarında her gün herkes aynı ülkeyi görür. <b>Serbest</b> modda istediğin kadar oynayabilirsin.</p>
+  </dialog>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="data.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
